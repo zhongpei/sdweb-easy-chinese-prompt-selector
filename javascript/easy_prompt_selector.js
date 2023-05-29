@@ -36,7 +36,7 @@ class EPSElementBuilder {
 
   // Elements
   static openButton({ onClick }) {
-    const button = EPSElementBuilder.baseButton('🔯タグを選択', { size: 'sm', color: 'secondary' })
+    const button = EPSElementBuilder.baseButton('🔯', { size: 'sm', color: 'secondary' })
     button.classList.add('easy_prompt_selector_button')
     button.addEventListener('click', onClick)
 
