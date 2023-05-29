@@ -79,7 +79,7 @@ class EPSElementBuilder {
     select.style.margin = '2px'
     select.addEventListener('change', (event) => { onChange(event.target.value) })
 
-    const none = ['なし']
+    const none = ['None']
     none.concat(options).forEach((key) => {
       const option = document.createElement('option')
       option.value = key
@@ -179,7 +179,7 @@ class EasyPromptSelector {
     row.appendChild(dropDown)
 
     const settings = document.createElement('div')
-    const checkbox = EPSElementBuilder.checkbox('ネガティブプロンプトに入力', {
+    const checkbox = EPSElementBuilder.checkbox('Neg Prompt', {
       onChange: (checked) => { this.toNegative = checked }
     })
     settings.style.flex = '1'
