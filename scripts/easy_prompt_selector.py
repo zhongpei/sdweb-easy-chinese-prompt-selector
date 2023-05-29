@@ -13,8 +13,10 @@ FILE_DIR = Path().absolute()
 BASE_DIR = Path(basedir())
 TAGS_DIR = BASE_DIR.joinpath('tags')
 
+
 def tag_files():
     return TAGS_DIR.rglob("*.yml")
+
 
 def load_tags():
     tags = {}
@@ -24,6 +26,7 @@ def load_tags():
             tags[filepath.stem] = yml
 
     return tags
+
 
 def find_tag(tags, location):
     if type(location) == str:
@@ -43,15 +46,16 @@ def find_tag(tags, location):
         else:
             value = find_tag(value, key)
 
-    if (type(value) == list):
+    if type(value) is list:
         value = random.choice(value)
 
     return value
 
+
 def replace_template(tags, prompt):
     count = 0
     while count < 100:
-        if not '@' in prompt:
+        if '@' not in prompt:
             break
 
         for match in re.finditer(r'(@((?P<num>\d+(-\d+)?)\$\$)?(?P<ref>[^>]+?)@)', prompt):
@@ -73,6 +77,7 @@ def replace_template(tags, prompt):
 
     return prompt
 
+
 class Script(scripts.Script):
     tags = {}
 
@@ -87,7 +92,7 @@ class Script(scripts.Script):
         return AlwaysVisible
 
     def ui(self, is_img2img):
-        if (is_img2img):
+        if is_img2img:
             return None
 
         reload_button = gr.Button('🔄', variant='secondary', elem_id='easy_prompt_selector_reload_button')
@@ -102,40 +107,41 @@ class Script(scripts.Script):
         return [reload_button]
 
     def replace_template_tags(self, p):
-        if shared.opts.eps_use_old_template_feature == False:
-            if ('@' in p.prompt):
+        if shared.opts.eps_use_old_template_feature is False:
+            if '@' in p.prompt:
                 for i in range(len(p.all_prompts)):
                     self.save_prompt_to_pnginfo(p)
 
                     prompt = "".join(replace_template(self.tags, p.all_prompts[i]))
                     p.all_prompts[i] = prompt
 
-            if ('@' in p.negative_prompt):
+            if '@' in p.negative_prompt:
                 for i in range(len(p.all_negative_prompts)):
                     self.save_prompt_to_pnginfo(p, True)
 
                     negative_prompt = "".join(replace_template(self.tags, p.all_negative_prompts[i]))
                     p.all_negative_prompts[i] = negative_prompt
         else:
-            if ('@' in p.prompt):
+            if '@' in p.prompt:
                 self.save_prompt_to_pnginfo(p)
 
                 p.prompt = replace_template(self.tags, p.prompt)
                 for i in range(len(p.all_prompts)):
                     p.all_prompts[i] = p.prompt
 
-            if ('@' in p.negative_prompt):
+            if '@' in p.negative_prompt:
                 self.save_prompt_to_pnginfo(p, True)
 
                 p.negative_prompt = replace_template(self.tags, p.negative_prompt)
                 for i in range(len(p.all_negative_prompts)):
                     p.all_negative_prompts[i] = p.negative_prompt
 
-    def save_prompt_to_pnginfo(self, p, is_negative = False):
-        if shared.opts.eps_enable_save_raw_prompt_to_pnginfo == False:
+    @staticmethod
+    def save_prompt_to_pnginfo(p, is_negative=False):
+        if shared.opts.eps_enable_save_raw_prompt_to_pnginfo is False:
             return
 
-        if is_negative == False:
+        if is_negative is False:
             prompt = p.prompt.replace('\n', ' ')
             param_name = "Input Prompt"
         else:

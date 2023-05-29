@@ -15,16 +15,20 @@ FILENAME_LIST = 'easyPromptSelector.txt'
 
 os.makedirs(TEMP_DIR, exist_ok=True)
 
+
 def examples():
     return EXAMPLES_DIR.rglob("*.yml")
+
 
 def copy_examples():
     for file in examples():
         file_path = str(file).replace('tags_examples', 'tags')
         shutil.copy2(file, file_path)
 
+
 def tags():
     return TAGS_DIR.rglob("*.yml")
+
 
 def write_filename_list():
     filepaths = map(lambda path: path.relative_to(FILE_DIR).as_posix(), list(tags()))
@@ -32,7 +36,5 @@ def write_filename_list():
     with open(TEMP_DIR.joinpath(FILENAME_LIST), 'w', encoding="utf-8") as f:
         f.write('\n'.join(sorted(filepaths)))
 
-if len(list(TAGS_DIR.rglob("*.yml"))) == 0:
-    copy_examples()
 
 write_filename_list()
